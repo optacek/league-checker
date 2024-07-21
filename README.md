@@ -24,3 +24,6 @@ Now, you can simply open 2 terminals to run both of them:
       This starts django backend
 #### For second terminal: ```cd league-tracker\frontend``` => ```npm start```
       This should open the main page for you
+
+
+## Also you need to provide .env file which contains API_KEY given from riot and SECRET_KEY provided by django
