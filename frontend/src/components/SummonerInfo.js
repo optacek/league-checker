@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import getSummonerInfo from '../api/riotApi';
 import topThreeChampions from "../utils/topThreeChampions";
+
 //Fetches summoner data based on name and id
 const SummonerInfo = () => {
 const [summonerName, setSummonerName] = useState('');
@@ -43,29 +44,6 @@ const renderMatchRectangles = () => {
 
 return (
   <div>
-    <form onSubmit={handleSubmit}>
-      <div>
-        <label htmlFor="summonerName">Summoner Name:</label>
-        <input
-            type="text"
-            id="summonerName"
-            value={summonerName}
-            onChange={(e) => setSummonerName(e.target.value)}
-            required
-        />
-      </div>
-      <div>
-        <label htmlFor="riotId">Riot ID:</label>
-        <input
-            type="text"
-            id="riotId"
-            value={riotId}
-            onChange={(e) => setRiotId(e.target.value)}
-            required
-        />
-      </div>
-      <button type="submit">Get Summoner Info</button>
-    </form>
     {error && <p style={{ color: 'red' }}>{error}</p>}
     {summonerData && (
         <div>
