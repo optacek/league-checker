@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import NotFound from './NotFound';
 import getSummonerInfo from "../api/riotApi";
+import Matches from "./Matches";
 
 const RenderSummoner = () => {
     const [summonerData, setSummonerData] = useState(null);
@@ -51,6 +52,9 @@ const RenderSummoner = () => {
                     <p>{summonerData['mastery'][0]}</p>
                     <p>{summonerData['mastery'][1]}</p>
                     <p>{summonerData['mastery'][2]}</p>
+                </div>
+                <div>
+                    <Matches array={summonerData['matches']} />
                 </div>
             </div>
         </>
