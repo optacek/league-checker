@@ -10,6 +10,7 @@ headers = {
 def get_summoner_by_name(summoner_name, riot_id):
     url = f"https://europe.api.riotgames.com/riot/account/v1/accounts/by-riot-id/{summoner_name}/{riot_id}"
     response = requests.get(url, headers=headers)
+    print(response.status_code)
     if response.status_code != 200:
         return None
     return response.json()
