@@ -31,7 +31,6 @@ def summoner_info(request, summoner_name, riot_id):
     mastery = get_top_mastery(puuid)
     league = get_league(summoner['id'])
     matches = get_matches(puuid)
-    matches = get_wins(matches, puuid)
     if mastery is None or summoner is None:
         return JsonResponse({'error': 'Error getting summoner info'})
     result = {
