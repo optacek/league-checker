@@ -4,8 +4,9 @@ from rest_framework import generics
 from django.contrib.auth import get_user_model
 
 from django.shortcuts import render
-from .utils import get_summoner_by_name, get_top_mastery, get_summoner, get_league, get_matches, get_wins
+from .utils import *
 from django.http import JsonResponse
+from .models import Summoner
 
 User = get_user_model()
 
@@ -22,6 +23,11 @@ class UserProfileView(generics.RetrieveAPIView):
 
 
 def summoner_info(request, summoner_name, riot_id):
+    summoner = Summoner.objects.filter(name=summoner_name).get()
+    #If summoner was already visited, return his info from db
+    if summoner:
+        return serialize_summoner(summoner)
+    print("Going to request to API")
     summoner_data = get_summoner_by_name(summoner_name, riot_id)
     # If summoner not found
     if summoner_data is None:
@@ -41,5 +47,15 @@ def summoner_info(request, summoner_name, riot_id):
         'matches': matches
     }
 
-    return JsonResponse(result)
+    # Now create the summoner as well
 
+    new_summoner = Summoner(
+        name=summoner_name,
+        league=league,
+        summoner=summoner,
+        mastery=mastery,
+        matches=matches
+    )
+    new_summoner.save()
+
+    return JsonResponse(result)

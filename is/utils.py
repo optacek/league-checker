@@ -1,5 +1,6 @@
 import requests
 from django.conf import settings
+from django.http import JsonResponse
 
 api_key = settings.API_KEY
 headers = {
@@ -245,3 +246,15 @@ def get_champ_by_name(id):
         143: 'Zyra',
     }
     return champs[id]
+
+
+def serialize_summoner(summoner):
+    print(summoner)
+    response = {
+        "summonerName": summoner.name,
+        "league": summoner.league,
+        "summoner": summoner.summoner,
+        "mastery": summoner.mastery,
+        "matches": summoner.matches
+    }
+    return JsonResponse(response)

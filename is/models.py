@@ -14,3 +14,10 @@ class CustomUser(AbstractUser):
     role = models.CharField(max_length=1, choices=ROLES)
 
 
+class Summoner(models.Model):
+    name = models.CharField(max_length=16)
+    league = models.JSONField(default=dict)
+    summoner = models.JSONField(default=dict)
+    mastery = models.JSONField(default=list)
+    matches = models.JSONField(default=list)
+
