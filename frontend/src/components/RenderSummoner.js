@@ -8,8 +8,8 @@ import SummonerCard from "./SummonerCard";
 const RenderSummoner = () => {
     const [summonerData, setSummonerData] = useState(null);
     const [error, setError] = useState(null);
-    const [wins, setWins] = useState(null);
-    const [losses, setLosses] = useState(null);
+    const [wins, setWins] = useState(0);
+    const [losses, setLosses] = useState(0);
     const { data } = useParams();
 
     useEffect(() => {
@@ -23,13 +23,14 @@ const RenderSummoner = () => {
                 setError(null);
                 const fetchedData = await getSummonerInfo(summonerName, riotId);
 
-                if (fetchedData && fetchedData.league) {
+                if (fetchedData) {
                     // Update state only if data is valid
                     setSummonerData(fetchedData);
-                    setWins(fetchedData.league.wins);
-                    setLosses(fetchedData.league.losses);
+                    if (fetchedData.league) {
+                        setWins(fetchedData.league.wins);
+                        setLosses(fetchedData.league.losses);
+                    }
                 } else {
-                    // Handle case where data does not have expected structure
                     setError('Invalid data structure');
                 }
             } catch (err) {
@@ -48,7 +49,7 @@ const RenderSummoner = () => {
     if (!summonerData || wins === null || losses === null) {
         return <div>Loading...</div>;
     }
-
+    console.log(data);
     const [summonerName] = data.split('-');
     const totalGames = wins + losses;
     const winrate = totalGames > 0 ? (wins / totalGames * 100).toFixed(2) : 0; // Calculate winrate and avoid division by zero

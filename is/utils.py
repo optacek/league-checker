@@ -1,6 +1,7 @@
 import requests
 from django.conf import settings
 from django.http import JsonResponse
+from .models import Summoner
 
 api_key = settings.API_KEY
 headers = {
@@ -11,7 +12,7 @@ headers = {
 def get_summoner_by_name(summoner_name, riot_id):
     url = f"https://europe.api.riotgames.com/riot/account/v1/accounts/by-riot-id/{summoner_name}/{riot_id}"
     response = requests.get(url, headers=headers)
-    print(response.status_code)
+    print("RESPONSE CODE: ", response.status_code)
     if response.status_code != 200:
         return None
     return response.json()
@@ -249,7 +250,6 @@ def get_champ_by_name(id):
 
 
 def serialize_summoner(summoner):
-    print(summoner)
     response = {
         "summonerName": summoner.name,
         "league": summoner.league,
@@ -258,3 +258,17 @@ def serialize_summoner(summoner):
         "matches": summoner.matches
     }
     return JsonResponse(response)
+
+
+def create_summoner(dict, summoner):
+    result = Summoner()
+    for item in dict.keys():
+        if not dict[item]:
+            if item == 'league':
+                result.league = {}
+            if item == 'mastery':
+                result.mastery = []
+            if item == 'matches':
+                result.matches = []
+
+    summoner.save()

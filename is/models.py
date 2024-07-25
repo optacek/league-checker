@@ -16,8 +16,7 @@ class CustomUser(AbstractUser):
 
 class Summoner(models.Model):
     name = models.CharField(max_length=16)
-    league = models.JSONField(default=dict)
+    league = models.JSONField(null=True, blank=True, default=dict)
     summoner = models.JSONField(default=dict)
-    mastery = models.JSONField(default=list)
-    matches = models.JSONField(default=list)
-
+    mastery = models.JSONField(null=True, blank=True, default=list)
+    matches = models.JSONField(null=True, blank=True, default=list)

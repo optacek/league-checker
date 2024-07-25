@@ -23,10 +23,10 @@ class UserProfileView(generics.RetrieveAPIView):
 
 
 def summoner_info(request, summoner_name, riot_id):
-    summoner = Summoner.objects.filter(name=summoner_name).get()
-    #If summoner was already visited, return his info from db
+    summoner = Summoner.objects.filter(name=summoner_name)
+    # If summoner was already visited, return his info from db
     if summoner:
-        return serialize_summoner(summoner)
+        return serialize_summoner(summoner.get())
     print("Going to request to API")
     summoner_data = get_summoner_by_name(summoner_name, riot_id)
     # If summoner not found
@@ -37,7 +37,7 @@ def summoner_info(request, summoner_name, riot_id):
     mastery = get_top_mastery(puuid)
     league = get_league(summoner['id'])
     matches = get_matches(puuid)
-    if mastery is None or summoner is None:
+    if summoner is None:
         return JsonResponse({'error': 'Error getting summoner info'})
     result = {
         'summonerName': summoner_name,
@@ -46,9 +46,7 @@ def summoner_info(request, summoner_name, riot_id):
         'mastery': mastery,
         'matches': matches
     }
-
     # Now create the summoner as well
-
     new_summoner = Summoner(
         name=summoner_name,
         league=league,
@@ -56,6 +54,5 @@ def summoner_info(request, summoner_name, riot_id):
         mastery=mastery,
         matches=matches
     )
-    new_summoner.save()
-
+    create_summoner(result, new_summoner)
     return JsonResponse(result)
