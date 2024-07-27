@@ -1,0 +1,35 @@
+.match-history-container {
+  padding: 20px;
+  overflow: auto;
+}
+
+.match {
+  margin-bottom: 20px; /* Space between matches */
+  border-bottom: 1px solid #ddd; /* Optional: Adds a separator line */
+  padding-bottom: 10px;
+}
+
+.team {
+  width: 48%;
+  display: inline-block;
+  vertical-align: top;
+  padding: 10px;
+}
+
+.blue-team {
+  border-right: 2px solid #000;
+}
+
+.red-team {
+  padding-left: 10px;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+.champion-name {
+  font-size: 18px;
+  margin-bottom: 10px;
+}

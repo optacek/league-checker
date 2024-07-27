@@ -257,7 +257,8 @@ def serialize_summoner(summoner):
         "league": summoner.league,
         "summoner": summoner.summoner,
         "mastery": summoner.mastery,
-        "matches": summoner.matches
+        "matches": summoner.matches,
+        "matches_details": summoner.matches_details
     }
     return JsonResponse(response)
 
@@ -272,6 +273,8 @@ def create_summoner(dict, summoner):
                 result.mastery = []
             if item == 'matches':
                 result.matches = []
+            if item == 'matches_details':
+                result.matches_details = []
 
     summoner.save()
 
@@ -307,7 +310,6 @@ def parse_matches(matches):
         # new_match = Match()
         blue = {}
         red = {}
-        print(matches)
         for participant in response['info']['participants']:
             # Add to blue
             if participant['teamId'] == 100:

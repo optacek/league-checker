@@ -9,17 +9,18 @@ import NotFound from "./components/NotFound";
 function App() {
     return (
         <Router>
-            <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+            <div>
                 <SearchBar />
-                <div style={{ marginTop: '60px' }}>
-                    <Routes>
-                        <Route path="/summoner/:data" element={<RenderSummoner />} />
-                        <Route path="*" element={<NotFound />} />
-                    </Routes>
+                <div style={{ marginTop: '60px'}}>
+                    <div>
+                        <Routes>
+                            <Route path="/summoner/:data" element={<RenderSummoner />} />
+                            <Route path="*" element={<NotFound />} />
+                        </Routes>
+                    </div>
                 </div>
             </div>
         </Router>
     );
 }
-
 export default App;

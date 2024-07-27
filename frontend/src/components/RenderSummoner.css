@@ -1,0 +1,27 @@
+/* Container for the entire summoner section */
+.render-summoner-container {
+  display: flex;
+  flex: 1;
+  min-height: calc(100vh - 60px); /* Adjust for SearchBar height */
+  overflow: hidden; /* Prevent overflow on the container itself */
+}
+
+/* Container for match history */
+.match-history-container {
+  flex: 1;
+  overflow-y: auto; /* Enable vertical scrolling */
+  padding: 20px;
+  margin-left: 220px; /* Adjust based on SummonerCard width */
+  box-sizing: border-box; /* Include padding and border in width/height calculations */
+}
+
+/* Container for SummonerCard */
+.summoner-card-container {
+  width: 200px; /* Adjust based on SummonerCard width */
+  position: fixed;
+  top: 80px; /* Adjust based on SearchBar height */
+  left: 0;
+  bottom: 0;
+  padding-right: 10px;
+  background-color: #fff;
+}

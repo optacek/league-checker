@@ -57,7 +57,7 @@ def summoner_info(request, summoner_name, riot_id):
         summoner=summoner,
         mastery=mastery,
         matches=matches_bools,
-        matches_details=matches
+        matches_details=matches,
     )
     create_summoner(result, new_summoner)
     return JsonResponse(result)
