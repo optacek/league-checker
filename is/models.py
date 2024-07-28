@@ -22,6 +22,3 @@ class Summoner(models.Model):
     matches = models.JSONField(null=True, blank=True, default=list)
     matches_details = models.JSONField(null=True, blank=True, default=dict)
 
-
-class Match(models.Model):
-    players = models.JSONField(default=dict)

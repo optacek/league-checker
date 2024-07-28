@@ -1,3 +1,4 @@
+from django.views.decorators.csrf import ensure_csrf_cookie
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .serializers import CustomTokenObtainPairSerializer, CustomUserSerializer
 from rest_framework import generics
@@ -20,6 +21,10 @@ class UserProfileView(generics.RetrieveAPIView):
 
     def get_object(self):
         return self.request.user
+
+
+def set_csrf_token(request):
+    return JsonResponse({'detail': 'CSRF Cookie set'})
 
 
 def summoner_info(request, summoner_name, riot_id):

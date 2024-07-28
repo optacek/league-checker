@@ -1,7 +1,9 @@
 import requests
 from django.conf import settings
-from django.http import JsonResponse
-from .models import Summoner, Match
+from django.http import JsonResponse, HttpResponseNotFound
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
+from .models import Summoner
 
 api_key = settings.API_KEY
 headers = {
@@ -323,3 +325,14 @@ def parse_matches(matches):
             target[position] = {participant['championName']: participant['puuid']}
         result.append({'blue': blue, 'red': red})
     return result
+
+
+@csrf_exempt
+@require_http_methods(['DELETE'])
+def delete_object(request, name):
+    try:
+        obj = Summoner.objects.get(name=name)
+        obj.delete()
+        return JsonResponse({'message': 'Success'})
+    except Summoner.DoesNotExist:
+        return HttpResponseNotFound({'error': 'Something went wrong, try again'})

@@ -28,4 +28,4 @@ class SummonerAdmin(admin.ModelAdmin):
     summoner_level_display.short_description = 'Summoner Level'
 
     # Show these fields in the admin form
-    fields = ('name', 'league', 'summoner', 'mastery', 'matches')
+    fields = ('name', 'league', 'summoner', 'mastery', 'matches', 'matches_details')
