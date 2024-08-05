@@ -20,3 +20,5 @@ class Summoner(models.Model):
     summoner = models.JSONField(default=dict)
     mastery = models.JSONField(null=True, blank=True, default=list)
     matches = models.JSONField(null=True, blank=True, default=list)
+    matches_details = models.JSONField(null=True, blank=True, default=dict)
+

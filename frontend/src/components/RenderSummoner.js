@@ -2,15 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import NotFound from './NotFound';
 import getSummonerInfo from "../api/riotApi";
-import Matches from "./Matches";
 import SummonerCard from "./SummonerCard";
-
+import MatchHistory from './MatchHistory';
+import './RenderSummoner.css';
+import Refresh from './Refresh';
 const RenderSummoner = () => {
     const [summonerData, setSummonerData] = useState(null);
     const [error, setError] = useState(null);
     const [wins, setWins] = useState(0);
     const [losses, setLosses] = useState(0);
     const { data } = useParams();
+    const [name, setName] = useState('');
+    const [id, setId] = useState('');
 
     useEffect(() => {
         const fetchSummonerData = async () => {
@@ -19,6 +22,8 @@ const RenderSummoner = () => {
                 return;
             }
             const [summonerName, riotId] = data.split('-');
+            setName(summonerName);
+            setId(riotId);
             try {
                 setError(null);
                 const fetchedData = await getSummonerInfo(summonerName, riotId);
@@ -49,22 +54,29 @@ const RenderSummoner = () => {
     if (!summonerData || wins === null || losses === null) {
         return <div>Loading...</div>;
     }
-    console.log(data);
-    const [summonerName] = data.split('-');
+    const [summonerName, riotId] = data.split('-');
     const totalGames = wins + losses;
     const winrate = totalGames > 0 ? (wins / totalGames * 100).toFixed(2) : 0; // Calculate winrate and avoid division by zero
-
     return (
-        <div style={{ marginTop: '60px' }}> {/* Adjust margin based on the height of SearchBar */}
-            <SummonerCard
-                champs={summonerData.mastery}
-                name={summonerName}
-                winrate={winrate}
-                level={summonerData.summoner.summonerLevel}
-            />
-            <Matches array={summonerData.matches} />
-        </div>
-    );
+    <>
+    <div className="render-summoner-container">
+      <div className="match-history-container">
+        <MatchHistory matchData={summonerData.matches_details} bools={summonerData.matches}/>
+      </div>
+      <div className="summoner-card-container">
+        <SummonerCard
+          champs={summonerData.mastery}
+          name={summonerName}
+          winrate={winrate}
+          level={summonerData.summoner.summonerLevel}
+        />
+      </div>
+    <div className="refresh">
+        <Refresh summonerName={summonerName} riotId={riotId} />
+    </div>
+    </div>
+    </>
+  );
 };
 
 export default RenderSummoner;

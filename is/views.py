@@ -1,3 +1,4 @@
+from django.views.decorators.csrf import ensure_csrf_cookie
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .serializers import CustomTokenObtainPairSerializer, CustomUserSerializer
 from rest_framework import generics
@@ -22,6 +23,10 @@ class UserProfileView(generics.RetrieveAPIView):
         return self.request.user
 
 
+def set_csrf_token(request):
+    return JsonResponse({'detail': 'CSRF Cookie set'})
+
+
 def summoner_info(request, summoner_name, riot_id):
     summoner = Summoner.objects.filter(name=summoner_name)
     # If summoner was already visited, return his info from db
@@ -37,6 +42,9 @@ def summoner_info(request, summoner_name, riot_id):
     mastery = get_top_mastery(puuid)
     league = get_league(summoner['id'])
     matches = get_matches(puuid)
+    matches_bools = get_wins(matches, puuid)
+
+    matches = parse_matches(matches)
     if summoner is None:
         return JsonResponse({'error': 'Error getting summoner info'})
     result = {
@@ -44,7 +52,8 @@ def summoner_info(request, summoner_name, riot_id):
         'league': league,
         'summoner': summoner,
         'mastery': mastery,
-        'matches': matches
+        'matches': matches_bools,
+        'matches_details': matches
     }
     # Now create the summoner as well
     new_summoner = Summoner(
@@ -52,7 +61,8 @@ def summoner_info(request, summoner_name, riot_id):
         league=league,
         summoner=summoner,
         mastery=mastery,
-        matches=matches
+        matches=matches_bools,
+        matches_details=matches,
     )
     create_summoner(result, new_summoner)
     return JsonResponse(result)

@@ -1,6 +1,8 @@
 import requests
 from django.conf import settings
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseNotFound
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
 from .models import Summoner
 
 api_key = settings.API_KEY
@@ -58,8 +60,10 @@ def get_league(userid):
 def get_matches(puuid):
     url = f"https://europe.api.riotgames.com/lol/match/v5/matches/by-puuid/${puuid}/ids?queue=420&start=0&count=20"
     response = requests.get(url, headers=headers).json()
-    return get_wins(response, puuid)
+    return response
 
+
+#
 
 def get_wins(matches, puuid):
     result = []
@@ -255,7 +259,8 @@ def serialize_summoner(summoner):
         "league": summoner.league,
         "summoner": summoner.summoner,
         "mastery": summoner.mastery,
-        "matches": summoner.matches
+        "matches": summoner.matches,
+        "matches_details": summoner.matches_details
     }
     return JsonResponse(response)
 
@@ -270,5 +275,64 @@ def create_summoner(dict, summoner):
                 result.mastery = []
             if item == 'matches':
                 result.matches = []
+            if item == 'matches_details':
+                result.matches_details = []
 
     summoner.save()
+
+
+def match_info(request, match):
+    url = f"https://europe.api.riotgames.com/lol/match/v5/matches/{match}"
+    response = requests.get(url, headers=headers).json()
+    for participant in response['info']['participants']:
+        print(participant['championName'], participant['role'], participant['individualPosition'])
+    return JsonResponse(response)
+
+
+def matches_test(request, summoner_name, riot_id):
+    url = f"https://europe.api.riotgames.com/riot/account/v1/accounts/by-riot-id/{summoner_name}/{riot_id}"
+    puuid = requests.get(url, headers=headers).json().get('puuid')
+    matches = get_matches(puuid)
+    return parse_matches(matches)
+
+
+def parse_role(position, role):
+    if role == 'CARRY':
+        return 'BOTTOM'
+    if role == 'NONE':
+        pass
+
+
+def parse_matches(matches):
+    result = []  # This is array of Match objects
+    # Iterate through all matches and return their details
+    for match in matches:
+        url = f"https://europe.api.riotgames.com/lol/match/v5/matches/{match}"
+        response = requests.get(url, headers=headers).json()
+        # new_match = Match()
+        blue = {}
+        red = {}
+        for participant in response['info']['participants']:
+            # Add to blue
+            if participant['teamId'] == 100:
+                target = blue
+            else:
+                target = red
+            position = participant['teamPosition']
+            # position = participant['individualPosition'] if participant[
+            #                                                  'individualPosition'] != 'UTILITY' else 'SUPPORT'
+            # In the match the structure is  match = { blue: {top: { champ : puuid}...}, red ...}
+            target[position] = {participant['championName']: participant['puuid']}
+        result.append({'blue': blue, 'red': red})
+    return result
+
+
+@csrf_exempt
+@require_http_methods(['DELETE'])
+def delete_object(request, name):
+    try:
+        obj = Summoner.objects.get(name=name)
+        obj.delete()
+        return JsonResponse({'message': 'Success'})
+    except Summoner.DoesNotExist:
+        return HttpResponseNotFound({'error': 'Something went wrong, try again'})
